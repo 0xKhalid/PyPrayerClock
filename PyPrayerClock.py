@@ -1,6 +1,6 @@
 """
 @file       PyPrayerClock.py
-@author     Khalid Mansoor AlAwadhi
+@author     Khalid Mansoor AlAwadhi <khalid@remal.io>
 @date       Aug 9 2024
 @brief      This script creates a GUI to display the current time and upcoming
             prayer times for Dubai, UAE. It fetches prayer times from the Aladhan API
