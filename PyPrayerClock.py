@@ -1,3 +1,23 @@
+"""
+@file       PyPrayerClock.py
+@author     Khalid Mansoor AlAwadhi
+@date       Aug 9 2024
+@brief      This script creates a GUI to display the current time and upcoming
+            prayer times for Dubai, UAE. It fetches prayer times from the Aladhan API
+            and plays a random Athan from a specified folder when the prayer time is reached.
+            Additionally, clicking on the screen during debugging will trigger the Athan playback.
+
+            Dependencies:
+            - tkinter: For creating the GUI.
+            - requests: For making API requests to fetch prayer times.
+            - pygame: For playing audio files.
+            - random: For selecting a random audio file.
+
+            Usage:
+            - Make sure to have an "AthanList" folder in the same directory containing Athan audio files.
+            - Run the script, and the GUI will display the current time and upcoming prayer times.
+            - The Athan will play at the designated prayer times.
+"""
 import tkinter as tk
 from tkinter import Label
 import requests
@@ -7,6 +27,13 @@ import random
 import pygame
 
 def get_prayer_times():
+    """
+    @brief Fetches the prayer times for Dubai, UAE from the Aladhan API.
+
+    @param None
+    
+    @return A dictionary containing the prayer times for Fajr, Dhuhr, Asr, Maghrib, and Isha.
+    """
     url = "http://api.aladhan.com/v1/timingsByCity"
     params = {
         "city": "Dubai",
@@ -26,6 +53,13 @@ def get_prayer_times():
         return None
 
 def play_athan():
+    """
+    @brief Plays a random Athan audio file from the "AthanList" folder.
+
+    @param None
+    
+    @return None
+    """
     athan_folder = "AthanList"
     if os.path.exists(athan_folder) and os.path.isdir(athan_folder):
         athan_files = [f for f in os.listdir(athan_folder) if os.path.isfile(os.path.join(athan_folder, f))]
@@ -40,6 +74,14 @@ def play_athan():
         print("Athan folder does not exist.")
 
 def update_time():
+    """
+    @brief Updates the current time display and checks if it's time to play the Athan.
+           Also determines and updates the next prayer time.
+    
+    @param None
+    
+    @return None
+    """
     # Update current time without seconds
     current_time = datetime.now().strftime("%I:%M %p")
     time_label.config(text=current_time)
@@ -72,6 +114,13 @@ def update_time():
     root.after(60000, update_time)
 
 def daily_update():
+    """
+    @brief Fetches the latest prayer times from the API once daily and updates the prayer times in the script.
+    
+    @param None
+    
+    @return None
+    """
     global prayer_times
     prayer_times = get_prayer_times()
     # Schedule next daily update
