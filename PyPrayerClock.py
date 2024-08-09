@@ -26,6 +26,8 @@ import os
 import random
 import pygame
 
+
+
 def get_prayer_times():
     """
     @brief Fetches the prayer times for Dubai, UAE from the Aladhan API.
