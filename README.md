@@ -4,6 +4,7 @@ A Python GUI application that displays the current time and upcoming prayer time
 #Changelog:
 ##v2: 
 - App now starts in fullscreen mode
+- Added `Mishary Rashid Alafasy` Athan audio file
 
 ##v1:
 - Initial release
