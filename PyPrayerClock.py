@@ -1,7 +1,7 @@
 """
 @file       PyPrayerClock.py
 @author     Khalid Mansoor AlAwadhi <khalid@remal.io>
-@date       Aug 9 2024
+@date       Inital Release - Aug 9 2024
 @brief      This script creates a GUI to display the current time and upcoming
             prayer times for Dubai, UAE. It fetches prayer times from the Aladhan API
             and plays a random Athan from a specified folder when the prayer time is reached.
@@ -113,7 +113,7 @@ def update_time():
     next_prayer_label.config(text=f"Next Prayer: {next_prayer[0]} at {next_prayer[1]}")
     
     # Schedule to update the time every minute
-    root.after(60000, update_time)
+    root.after(1000, update_time)
 
 def daily_update():
     """
@@ -132,10 +132,15 @@ def daily_update():
 root = tk.Tk()
 root.title("Prayer Times")
 root.configure(bg='black')
-root.geometry("800x600")  # Set the size of the window
+
+# Enable fullscreen mode on startup
+root.attributes('-fullscreen', True)
+
+# Exit full-screen mode by pressing the 'Escape' key
+root.bind("<Escape>", lambda event: root.attributes("-fullscreen", False))
 
 # Time label with a digital-looking font
-digital_font = ("DS-Digital", 72)  # You can replace with a similar digital font available on your system
+digital_font = ("DS-Digital", 150)
 time_label = Label(root, font=digital_font, fg="white", bg="black")
 time_label.pack(expand=True)
 
