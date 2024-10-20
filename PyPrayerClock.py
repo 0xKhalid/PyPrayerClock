@@ -25,6 +25,10 @@ from datetime import datetime, timedelta
 import os
 import random
 import pygame
+import time
+
+# Global variable to track if Athan is playing
+is_athan_playing = False
 
 
 
@@ -54,6 +58,8 @@ def get_prayer_times():
         print(f"Failed to retrieve data: {response.status_code}")
         return None
 
+
+
 def play_athan():
     """
     @brief Plays a random Athan audio file from the "AthanList" folder.
@@ -62,18 +68,32 @@ def play_athan():
     
     @return None
     """
-    athan_folder = "AthanList"
+    global is_athan_playing
+
+    # Get the absolute path of the directory where the script is running
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Define the path to the "AthanList" folder inside the script directory
+    athan_folder = os.path.join(script_dir, "AthanList")
+
     if os.path.exists(athan_folder) and os.path.isdir(athan_folder):
         athan_files = [f for f in os.listdir(athan_folder) if os.path.isfile(os.path.join(athan_folder, f))]
         if athan_files:
             selected_athan = random.choice(athan_files)
+            print(f"Playing Athan: {selected_athan}")
             pygame.mixer.init()
             pygame.mixer.music.load(os.path.join(athan_folder, selected_athan))
+            
+            # Start playing the audio
             pygame.mixer.music.play()
+            is_athan_playing = True  # Set flag to indicate Athan is playing
+
         else:
             print("No Athan files found in the folder.")
     else:
         print("Athan folder does not exist.")
+
+
 
 def update_time():
     """
@@ -115,6 +135,8 @@ def update_time():
     # Schedule to update the time every minute
     root.after(1000, update_time)
 
+
+
 def daily_update():
     """
     @brief Fetches the latest prayer times from the API once daily and updates the prayer times in the script.
@@ -127,6 +149,25 @@ def daily_update():
     prayer_times = get_prayer_times()
     # Schedule next daily update
     root.after(86400000, daily_update)  # 86400000 ms = 24 hours
+
+
+
+def stop_athan(event=None):
+    """
+    @brief Stops the Athan if it's currently playing.
+    
+    @param event: Optional event parameter for Tkinter binding.
+    
+    @return None
+    """
+    global is_athan_playing
+
+    if is_athan_playing:
+        pygame.mixer.music.stop()  # Stop the Athan playback
+        is_athan_playing = False   # Reset flag
+        print("Athan has been stopped due to screen tap.")
+
+
 
 # Initialize the Tkinter root window
 root = tk.Tk()
@@ -155,6 +196,9 @@ next_prayer_label.place(relx=0.5, rely=0.9, anchor='center')
 # Start the daily update and time update loop
 daily_update()
 update_time()
+
+# Bind the mouse click event to stop the Athan if it's playing
+root.bind("<Button-1>", stop_athan)
 
 # Start the Tkinter main loop
 root.mainloop()
