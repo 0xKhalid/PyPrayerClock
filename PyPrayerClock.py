@@ -104,6 +104,8 @@ def update_time():
     
     @return None
     """
+    global is_athan_playing
+
     # Update current time without seconds
     current_time = datetime.now().strftime("%I:%M %p")
     time_label.config(text=current_time)
@@ -125,15 +127,21 @@ def update_time():
         prayer_time = tomorrow.replace(hour=prayer_time.hour, minute=prayer_time.minute, second=0, microsecond=0)
         next_prayer = ("Fajr", prayer_time.strftime("%I:%M %p"))
     
-    # Check if it's time for the current prayer and play Athan
-    current_prayer_time = datetime.now().replace(second=0, microsecond=0).strftime("%I:%M %p")
-    if current_prayer_time in prayer_times.values():
-        play_athan()
-
+    # Check if it's time for the current prayer and play Athan if it's not already playing
+    now = datetime.now()
+    for prayer, time_str in prayer_times.items():
+        prayer_time = datetime.strptime(time_str, "%H:%M")
+        prayer_time = now.replace(hour=prayer_time.hour, minute=prayer_time.minute, second=0, microsecond=0)
+        
+        # Allow a 1-minute window for Athan to play
+        if prayer_time <= now <= prayer_time + timedelta(minutes=1):
+            if not is_athan_playing:  # Avoid overlapping Athans
+                play_athan()
+    
     next_prayer_label.config(text=f"Next Prayer: {next_prayer[0]} at {next_prayer[1]}")
     
-    # Schedule to update the time every minute
-    root.after(1000, update_time)
+    # Schedule to update the time every 30s
+    root.after(30000, update_time)
 
 
 
